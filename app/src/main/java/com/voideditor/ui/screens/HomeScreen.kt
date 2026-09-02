@@ -51,7 +51,7 @@ fun HomeScreen(onNavigate: (VoidEditorRoute) -> Unit, onProjectCreated: (String)
         verticalArrangement = Arrangement.Center
     ) {
         EntranceItem(visible = visible, delayMillis = 0) {
-            EditorEsLogo(modifier = Modifier.size(88.dp))
+            VoidEditorLogo(modifier = Modifier.size(88.dp))
         }
         Spacer(modifier = Modifier.height(16.dp))
         EntranceItem(visible = visible, delayMillis = 90) {
@@ -125,7 +125,7 @@ fun HomeScreen(onNavigate: (VoidEditorRoute) -> Unit, onProjectCreated: (String)
 }
 
 @Composable
-private fun EditorEsLogo(modifier: Modifier = Modifier) {
+private fun VoidEditorLogo(modifier: Modifier = Modifier) {
     Canvas(modifier = modifier) {
         val strokeWidth = size.minDimension * 0.05f
         drawLine(brush = LogoBrush, start = Offset(size.width * 0.38f, size.height * 0.24f), end = Offset(size.width * 0.20f, size.height * 0.5f), strokeWidth = strokeWidth, cap = StrokeCap.Round)

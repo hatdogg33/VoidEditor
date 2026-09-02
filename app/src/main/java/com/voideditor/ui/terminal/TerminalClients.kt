@@ -12,7 +12,7 @@ import com.termux.terminal.TerminalSessionClient
 import com.termux.view.TerminalView
 import com.termux.view.TerminalViewClient
 
-class EditorEsSessionClient(
+class VoidEditorSessionClient(
     private val context: Context,
     private val view: TerminalView,
     private val onShellExited: () -> Unit
@@ -74,7 +74,7 @@ class EditorEsSessionClient(
     override fun logStackTrace(tag: String?, e: Exception?) {}
 }
 
-class EditorEsViewClient(
+class VoidEditorViewClient(
     private val context: Context,
     private val view: TerminalView,
     private val ctrlArmed: () -> Boolean,

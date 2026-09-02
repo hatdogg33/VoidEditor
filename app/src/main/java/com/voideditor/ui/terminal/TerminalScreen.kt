@@ -208,7 +208,7 @@ private fun instantiateSession(
     bootCommand: String?,
     onShellExited: () -> Unit
 ): TerminalSession {
-    val client = EditorEsSessionClient(context, view, onShellExited)
+    val client = VoidEditorSessionClient(context, view, onShellExited)
     val ubuntuReady = ProotConfig.isInstalled(context) && ProotConfig.isAvailable(context)
     return if (ubuntuReady) {
         ProotConfig.registerAndroidIds(context)
@@ -330,7 +330,7 @@ fun TerminalScreen(
 
     // Attach a session to the view
     fun attachSessionToView(session: TerminalSession, id: Int, view: TerminalView) {
-        val client = EditorEsSessionClient(context, view) {
+        val client = VoidEditorSessionClient(context, view) {
             TermuxService.killSession(context, id)
             val remaining = TermuxService.allSessions()
             if (remaining.isNotEmpty()) {
@@ -576,7 +576,7 @@ fun TerminalScreen(
                             isFocusable = true
                             isFocusableInTouchMode = true
                             setTerminalViewClient(
-                                EditorEsViewClient(
+                                VoidEditorViewClient(
                                     context = ctx,
                                     view = this,
                                     ctrlArmed = { ctrlArmed },

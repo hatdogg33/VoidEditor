@@ -13,7 +13,7 @@ val SpringGreen = Color(0xFF02F5A1)
 val DeepOnyx = Color(0xFF07191E)
 
 @Immutable
-data class EditorEsColors(
+data class VoidEditorColors(
     val abyss: Color,
     val teal: Color,
     val mint: Color,
@@ -27,7 +27,7 @@ data class EditorEsColors(
     val buttonSecondaryContent: Color
 )
 
-val VoidEditorPalette = EditorEsColors(
+val VoidEditorPalette = VoidEditorColors(
     abyss = DeepOnyx,
     teal = SpringGreen,
     mint = SpringGreen,
@@ -41,7 +41,7 @@ val VoidEditorPalette = EditorEsColors(
     buttonSecondaryContent = Color(0xFFEFFFF7)
 )
 
-private val EditorEsColorScheme = darkColorScheme(
+private val VoidEditorColorScheme = darkColorScheme(
     primary = SpringGreen,
     onPrimary = DeepOnyx,
     secondary = SpringGreen,
@@ -52,7 +52,7 @@ private val EditorEsColorScheme = darkColorScheme(
     onSurface = Color(0xFFF2FFFA)
 )
 
-private val EditorEsShapes = Shapes(
+private val VoidEditorShapes = Shapes(
     small = RoundedCornerShape(14.dp),
     medium = RoundedCornerShape(20.dp),
     large = RoundedCornerShape(28.dp)
@@ -61,8 +61,8 @@ private val EditorEsShapes = Shapes(
 @Composable
 fun VoidEditorTheme(content: @Composable () -> Unit) {
     MaterialTheme(
-        colorScheme = EditorEsColorScheme,
-        shapes = EditorEsShapes,
+        colorScheme = VoidEditorColorScheme,
+        shapes = VoidEditorShapes,
         content = content
     )
 }

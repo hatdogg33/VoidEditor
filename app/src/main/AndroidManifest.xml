@@ -50,7 +50,7 @@
         </service>
 
         <provider
-            android:name=".storage.EditorEsDocumentsProvider"
+            android:name=".storage.VoidEditorDocumentsProvider"
             android:authorities="com.voideditor.documents"
             android:enabled="true"
             android:exported="true"
