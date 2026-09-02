@@ -126,6 +126,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.voideditor.viewmodel.EditorViewModel
+import com.voideditor.ui.search.FileSearchBar
+import com.voideditor.ui.search.FileSearchResults
+import com.voideditor.ui.git.GitStatusPanel
+import com.voideditor.ui.git.GitLogPanel
+import com.voideditor.ui.git.GitCommitDialog
 
 private val ErrorTint = Color(0xFFEF6767)
 private val DisabledTint = Color(0xFF3F5F58)
@@ -185,7 +192,8 @@ private class DirtyMarker(private val onDirty: () -> Unit) : ContentListener {
 fun EditorScreen(
     projectPath: String,
     onOpenSettings: () -> Unit,
-    onOpenTerminal: () -> Unit
+    onOpenTerminal: () -> Unit,
+    viewModel: EditorViewModel = viewModel()
 ) {
     val scope = rememberCoroutineScope()
     val drawerAnim = remember { Animatable(0f) }
@@ -194,6 +202,17 @@ fun EditorScreen(
 
     val projectDir = remember { File(projectPath) }
     val explorer = remember { ExplorerState(projectDir) }
+
+    val searchResults by viewModel.searchResults.collectAsState()
+    val isSearching by viewModel.isSearching.collectAsState()
+    val gitStatus by viewModel.gitStatus.collectAsState()
+    val gitLog by viewModel.gitLog.collectAsState()
+
+    var searchVisible by remember { mutableStateOf(false) }
+    var searchQuery by remember { mutableStateOf("") }
+    var searchCaseSensitive by remember { mutableStateOf(false) }
+    var gitVisible by remember { mutableStateOf(false) }
+    var showGitCommit by remember { mutableStateOf(false) }
 
     val tabs = remember {
         val initial = File(projectDir, ProjectCreator.MAIN_SOURCE_NAME)
@@ -698,6 +717,15 @@ fun EditorScreen(
         consoleVisible = false
     }
 
+    BackHandler(enabled = drawerProgress == 0f && searchVisible) {
+        searchVisible = false
+        searchQuery = ""
+    }
+
+    BackHandler(enabled = drawerProgress == 0f && gitVisible) {
+        gitVisible = false
+    }
+
     LaunchedEffect(editorRef) {
         editorRef?.let { EditorConfigurator.apply(it) }
     }
@@ -710,10 +738,28 @@ fun EditorScreen(
         }
     }
 
+    // Initialize ViewModel and start auto-save
+    LaunchedEffect(projectDir) {
+        viewModel.refreshGitStatus(projectDir)
+        viewModel.startAutoSave {
+            val modified = mutableMapOf<String, String>()
+            tabs.filter { it.dirty }.forEach { tab ->
+                modified[tab.path] = tab.text
+            }
+            modified
+        }
+    }
+
+    // Add file to recent files when opened
+    LaunchedEffect(activePath) {
+        activePath?.let { viewModel.addRecentFile(it) }
+    }
+
     DisposableEffect(Unit) {
         onDispose {
             buildRunner.stop()
             lspScope.launch { lspManager.shutdown() }
+            viewModel.stopAutoSave()
         }
     }
 
@@ -778,6 +824,30 @@ fun EditorScreen(
                         contentDescription = "Find",
                         tint = if (findVisible) AccentGreen else Color(0xFFE4F5EC),
                         modifier = Modifier.size(19.dp)
+                    )
+                }
+
+                IconButton(onClick = {
+                    searchVisible = !searchVisible
+                    if (!searchVisible) searchQuery = ""
+                }) {
+                    Icon(
+                        painter = painterResource(android.R.drawable.ic_menu_search),
+                        contentDescription = "Project Search",
+                        tint = if (searchVisible) AccentGreen else Color(0xFFE4F5EC),
+                        modifier = Modifier.size(19.dp)
+                    )
+                }
+
+                IconButton(onClick = {
+                    gitVisible = !gitVisible
+                    if (gitVisible) viewModel.refreshGitStatus(projectDir)
+                }) {
+                    Text(
+                        "Git",
+                        color = if (gitVisible) AccentGreen else Color(0xFFE4F5EC),
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -950,6 +1020,63 @@ fun EditorScreen(
                         syncSearchCounter()
                     },
                     onClose = { closeFind() }
+                )
+            }
+
+            if (searchVisible) {
+                FileSearchBar(
+                    query = searchQuery,
+                    onQueryChange = { query ->
+                        searchQuery = query
+                        viewModel.searchProject(projectDir, query, searchCaseSensitive)
+                    },
+                    onDismiss = {
+                        searchVisible = false
+                        searchQuery = ""
+                    },
+                    caseSensitive = searchCaseSensitive,
+                    onCaseSensitiveChange = { searchCaseSensitive = it }
+                )
+                FileSearchResults(
+                    results = searchResults,
+                    isSearching = isSearching,
+                    onResultClick = { path, line ->
+                        openFile(File(path))
+                        jumpTo(line - 1, 0)
+                    }
+                )
+            }
+
+            if (gitVisible) {
+                gitStatus?.let { status ->
+                    GitStatusPanel(
+                        status = status,
+                        onCommitClick = { showGitCommit = true },
+                        onInitClick = {
+                            viewModel.gitInit(projectDir) { success, output ->
+                                lspStatus = if (success) "Git initialized" else output
+                            }
+                        },
+                        onRefreshClick = { viewModel.refreshGitStatus(projectDir) }
+                    )
+                    if (gitLog.isNotEmpty()) {
+                        GitLogPanel(
+                            log = gitLog,
+                            modifier = Modifier.height(150.dp)
+                        )
+                    }
+                }
+            }
+
+            if (showGitCommit) {
+                GitCommitDialog(
+                    onCommit = { message ->
+                        viewModel.gitCommit(projectDir, message) { success, output ->
+                            lspStatus = if (success) "Committed!" else output
+                            showGitCommit = false
+                        }
+                    },
+                    onDismiss = { showGitCommit = false }
                 )
             }
 

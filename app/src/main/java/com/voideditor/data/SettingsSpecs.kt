@@ -266,6 +266,9 @@ object PreferenceSettings {
     const val BuildType = "build_type"
     const val ConsoleAutoOpen = "console_auto_open"
     const val ConsoleMaxLines = "console_max_lines"
+    const val AutoSaveEnabled = "auto_save_enabled"
+    const val AutoSaveInterval = "auto_save_interval"
+    const val FileSearchEnabled = "file_search_enabled"
 
     val specs: List<SettingSpec> = listOf(
         HeaderSpec("hdr_lsp", "Code intelligence"),
@@ -303,6 +306,11 @@ object PreferenceSettings {
         IntSpec(ConsoleMaxLines, "Console history", "Lines kept in the build console", 2000, 200, 10000, 200),
 
         HeaderSpec("hdr_terminal", "Terminal"),
-        BoolSpec(KeepTerminalAlive, "Keep session alive", "Leave the shell running when the terminal is closed", true)
+        BoolSpec(KeepTerminalAlive, "Keep session alive", "Leave the shell running when the terminal is closed", true),
+
+        HeaderSpec("hdr_autosave", "Auto-save"),
+        BoolSpec(AutoSaveEnabled, "Enable auto-save", "Automatically save modified files periodically", true),
+        IntSpec(AutoSaveInterval, "Save interval", "Seconds between auto-saves", 30, 10, 300, 10, "s"),
+        BoolSpec(FileSearchEnabled, "Enable project search", "Show project-wide search in the toolbar", true)
     )
 }

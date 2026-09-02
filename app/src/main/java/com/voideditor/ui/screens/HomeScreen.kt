@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -30,17 +32,27 @@ import com.voideditor.ui.components.EntranceItem
 import com.voideditor.ui.dialogs.CreateProjectDialog
 import com.voideditor.ui.dialogs.OpenProjectSheet
 import com.voideditor.ui.navigation.VoidEditorRoute
+import com.voideditor.ui.recent.RecentFilesPanel
 import com.voideditor.ui.theme.VoidEditorPalette
+import com.voideditor.viewmodel.EditorViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 private val LogoBrush = Brush.linearGradient(
     colors = listOf(VoidEditorPalette.mint, VoidEditorPalette.mint.copy(alpha = 0.45f))
 )
 
 @Composable
-fun HomeScreen(onNavigate: (VoidEditorRoute) -> Unit, onProjectCreated: (String) -> Unit) {
+fun HomeScreen(
+    onNavigate: (VoidEditorRoute) -> Unit,
+    onProjectCreated: (String) -> Unit,
+    viewModel: EditorViewModel = viewModel()
+) {
     var visible by remember { mutableStateOf(false) }
     var showCreateDialog by remember { mutableStateOf(false) }
     var showOpenSheet by remember { mutableStateOf(false) }
+    val recentFiles by viewModel.recentFiles.collectAsState()
+    val context = LocalContext.current
+
     LaunchedEffect(Unit) { visible = true }
     Column(
         modifier = Modifier
@@ -102,6 +114,21 @@ fun HomeScreen(onNavigate: (VoidEditorRoute) -> Unit, onProjectCreated: (String)
                 iconRes = R.drawable.settings,
                 onClick = { onNavigate(VoidEditorRoute.Settings) }
             )
+        }
+
+        if (recentFiles.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(32.dp))
+            EntranceItem(visible = visible, delayMillis = 560) {
+                RecentFilesPanel(
+                    recentFiles = recentFiles,
+                    onFileClick = { path ->
+                        onProjectCreated(path.substringBeforeLast("/"))
+                    },
+                    onRemoveClick = { path ->
+                        viewModel.removeRecentFile(path)
+                    }
+                )
+            }
         }
     }
     if (showCreateDialog) {
