@@ -268,7 +268,6 @@ object PreferenceSettings {
     const val ConsoleMaxLines = "console_max_lines"
     const val AutoSaveEnabled = "auto_save_enabled"
     const val AutoSaveInterval = "auto_save_interval"
-    const val FileSearchEnabled = "file_search_enabled"
 
     val specs: List<SettingSpec> = listOf(
         HeaderSpec("hdr_lsp", "Code intelligence"),
@@ -310,7 +309,6 @@ object PreferenceSettings {
 
         HeaderSpec("hdr_autosave", "Auto-save"),
         BoolSpec(AutoSaveEnabled, "Enable auto-save", "Automatically save modified files periodically", true),
-        IntSpec(AutoSaveInterval, "Save interval", "Seconds between auto-saves", 30, 10, 300, 10, "s"),
-        BoolSpec(FileSearchEnabled, "Enable project search", "Show project-wide search in the toolbar", true)
+        IntSpec(AutoSaveInterval, "Save interval", "Seconds between auto-saves", 30, 10, 300, 10, "s")
     )
 }

@@ -129,8 +129,6 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.voideditor.viewmodel.EditorViewModel
-import com.voideditor.ui.search.FileSearchBar
-import com.voideditor.ui.search.FileSearchResults
 import com.voideditor.ui.git.GitStatusPanel
 import com.voideditor.ui.git.GitLogPanel
 import com.voideditor.ui.git.GitCommitDialog
@@ -204,14 +202,9 @@ fun EditorScreen(
     val projectDir = remember { File(projectPath) }
     val explorer = remember { ExplorerState(projectDir) }
 
-    val searchResults by viewModel.searchResults.collectAsState()
-    val isSearching by viewModel.isSearching.collectAsState()
     val gitStatus by viewModel.gitStatus.collectAsState()
     val gitLog by viewModel.gitLog.collectAsState()
 
-    var searchVisible by remember { mutableStateOf(false) }
-    var searchQuery by remember { mutableStateOf("") }
-    var searchCaseSensitive by remember { mutableStateOf(false) }
     var gitVisible by remember { mutableStateOf(false) }
     var showGitCommit by remember { mutableStateOf(false) }
 
@@ -718,11 +711,6 @@ fun EditorScreen(
         consoleVisible = false
     }
 
-    BackHandler(enabled = drawerProgress == 0f && searchVisible) {
-        searchVisible = false
-        searchQuery = ""
-    }
-
     BackHandler(enabled = drawerProgress == 0f && gitVisible) {
         gitVisible = false
     }
@@ -824,18 +812,6 @@ fun EditorScreen(
                         painter = painterResource(R.drawable.search),
                         contentDescription = "Find",
                         tint = if (findVisible) AccentGreen else Color(0xFFE4F5EC),
-                        modifier = Modifier.size(19.dp)
-                    )
-                }
-
-                IconButton(onClick = {
-                    searchVisible = !searchVisible
-                    if (!searchVisible) searchQuery = ""
-                }) {
-                    Icon(
-                        painter = painterResource(android.R.drawable.ic_menu_search),
-                        contentDescription = "Project Search",
-                        tint = if (searchVisible) AccentGreen else Color(0xFFE4F5EC),
                         modifier = Modifier.size(19.dp)
                     )
                 }
@@ -1021,30 +997,6 @@ fun EditorScreen(
                         syncSearchCounter()
                     },
                     onClose = { closeFind() }
-                )
-            }
-
-            if (searchVisible) {
-                FileSearchBar(
-                    query = searchQuery,
-                    onQueryChange = { query ->
-                        searchQuery = query
-                        viewModel.searchProject(projectDir, query, searchCaseSensitive)
-                    },
-                    onDismiss = {
-                        searchVisible = false
-                        searchQuery = ""
-                    },
-                    caseSensitive = searchCaseSensitive,
-                    onCaseSensitiveChange = { searchCaseSensitive = it }
-                )
-                FileSearchResults(
-                    results = searchResults,
-                    isSearching = isSearching,
-                    onResultClick = { path, line ->
-                        openFile(File(path))
-                        jumpTo(line - 1, 0)
-                    }
                 )
             }
 
