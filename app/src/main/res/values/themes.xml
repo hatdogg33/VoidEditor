@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.EditorEs" parent="android:Theme.Material.NoActionBar">
+    <style name="Theme.VoidEditor" parent="android:Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/editor_es_deep</item>
         <item name="android:statusBarColor">@color/editor_es_deep</item>
         <item name="android:navigationBarColor">@color/editor_es_deep</item>

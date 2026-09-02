@@ -18,7 +18,7 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
-        android:name=".EditorEsApp"
+        android:name=".VoidEditorApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -27,13 +27,13 @@
         android:largeHeap="true"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
-        android:theme="@style/Theme.EditorEs">
+        android:theme="@style/Theme.VoidEditor">
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.EditorEs">
+            android:theme="@style/Theme.VoidEditor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -51,7 +51,7 @@
 
         <provider
             android:name=".storage.EditorEsDocumentsProvider"
-            android:authorities="com.editor.es.documents"
+            android:authorities="com.voideditor.documents"
             android:enabled="true"
             android:exported="true"
             android:grantUriPermissions="true"

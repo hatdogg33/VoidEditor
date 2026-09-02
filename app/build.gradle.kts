@@ -13,11 +13,11 @@ val signingProperties = Properties().apply {
 }
 
 android {
-    namespace = "com.editor.es"
+    namespace = "com.voideditor"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.editor.es"
+        applicationId = "com.voideditor"
         minSdk = 28
         targetSdk = 28
         versionCode = 1

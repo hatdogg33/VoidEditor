@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">EditorEs</string>
+    <string name="app_name">VoidEditor</string>
     <string name="explorer_title">Explorer</string>
     <string name="home_tagline">Native C++ studio in your pocket</string>
     <string name="create_project">Create Project</string>
@@ -9,9 +9,9 @@
     <string name="settings">Settings</string>
     <string name="coming_soon">Coming soon</string>
     <string name="back">Back</string>
-    <string name="projects_folder_name">EditorEs</string>
+    <string name="projects_folder_name">VoidEditor</string>
     <string name="storage_title">Storage Access</string>
-    <string name="storage_message">EditorEs needs access to all files so it can create your C++ projects inside the EditorEs folder on your device.</string>
+    <string name="storage_message">VoidEditor needs access to all files so it can create your C++ projects inside the VoidEditor folder on your device.</string>
     <string name="grant_access">Grant Access</string>
     <string name="folder_name">Folder Name</string>
     <string name="library_name">Library Name</string>

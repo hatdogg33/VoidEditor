@@ -18,7 +18,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "EditorEs"
+rootProject.name = "VoidEditor"
 include(":app")
 include(":terminal-emulator")
 include(":terminal-view")
