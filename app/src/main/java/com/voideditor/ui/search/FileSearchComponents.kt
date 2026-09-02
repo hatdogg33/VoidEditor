@@ -41,7 +41,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.voideditor.R
 import com.voideditor.viewmodel.SearchResult
-import com.voideditor.viewmodel.SearchState
 
 private val SearchBarBackground = Color(0xFF0A222B)
 private val ResultHover = Color(0xFF1A3A45)
